@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title="Email Automations">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading Email Automations"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={emailAutomations.length}>
+                <lightning-datatable
+                    data={emailAutomations}
+                    columns={columns}
+                    key-field="Id"
+                    onrowaction={handleRowAction}
+                >
+                </lightning-datatable>
+            </template>
+            <template if:false={emailAutomations.length}>
+                <div>No Email Automations available.</div>
+            </template>
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-text-color_error">
+                {error}
+            </div>
+        </template>
+    </lightning-card>
+</template>
