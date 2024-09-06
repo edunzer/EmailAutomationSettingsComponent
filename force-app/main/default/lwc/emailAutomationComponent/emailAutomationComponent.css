@@ -50,3 +50,21 @@
     outline: none; /* Remove default focus outline */
     box-shadow: 0 0 0 4px rgba(0, 112, 210, 0.3); /* Custom focus shadow */
 }
+
+/* Disabled button styling */
+.subscribe-button:disabled {
+    background-color: #c7c7c7; /* Light grey background when disabled */
+    cursor: not-allowed; /* Not-allowed cursor when disabled */
+    border-color: #c7c7c7; /* Match the border to the background */
+    color: #6e6e6e; /* Grey text color when disabled */
+}
+
+.subscribe-button.unsubscribe:disabled {
+    background-color: #6e6e6e; /* Grey background for disabled Unsubscribe */
+    border-color: #6e6e6e; /* Match border for disabled Unsubscribe */
+    color: #ffffff; /* White text color */
+}
+
+.subscribe-button:disabled:hover::before {
+    background-color: transparent; /* No hover effect when disabled */
+}

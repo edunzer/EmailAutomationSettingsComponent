@@ -5,9 +5,8 @@
 
     <template if:false={isLoading}>
         <div class="button-container">
-            <!-- Replace the icon with text using buttonLabel -->
-            <button class={subscribeButtonClass} onclick={handleSubscribeUnsubscribe}>
-                {buttonLabel}  <!-- Display "Subscribe" or "Unsubscribe" based on isSubscribed -->
+            <button class={subscribeButtonClass} onclick={handleSubscribeUnsubscribe} disabled={isButtonDisabled}>
+                {buttonLabel}
             </button>
         </div>
     </template>
