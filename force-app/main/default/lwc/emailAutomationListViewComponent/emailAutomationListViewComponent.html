@@ -1,0 +1,57 @@
+<template>
+    <div class="datatable-wrapper">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading Email Automations"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={emailAutomations.length}>
+                <div class="datatable-container">
+                    <lightning-datatable
+                        data={paginatedEmailAutomations}
+                        columns={columns}
+                        key-field="Id"
+                        onrowaction={handleRowAction}
+                        hide-checkbox-column="true"
+                    >
+                    </lightning-datatable>
+                </div>
+
+                <!-- Pagination controls below the datatable -->
+                <lightning-layout horizontal-align="space">
+                    <lightning-layout-item flexibility="auto">
+                        <lightning-button 
+                            label="Previous" 
+                            icon-name="utility:chevronleft" 
+                            onclick={handlePreviousPage}
+                            disabled={disablePrevious}
+                        >
+                        </lightning-button>
+                    </lightning-layout-item>
+                    <lightning-layout-item flexibility="auto">
+                        Page {currentPage} of {totalPages}
+                    </lightning-layout-item>
+                    <lightning-layout-item flexibility="auto">
+                        <lightning-button 
+                            label="Next" 
+                            icon-name="utility:chevronright" 
+                            icon-position="right"
+                            onclick={handleNextPage}
+                            disabled={disableNext}
+                        >
+                        </lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <template if:false={emailAutomations.length}>
+                <div>No Email Automations available.</div>
+            </template>
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-text-color_error">
+                {error}
+            </div>
+        </template>
+    </div>
+</template>

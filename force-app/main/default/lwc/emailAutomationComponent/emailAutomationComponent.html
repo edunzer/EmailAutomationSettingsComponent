@@ -1,0 +1,19 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+
+    <template if:false={isLoading}>
+        <div class="button-container">
+            <button class={subscribeButtonClass} onclick={handleSubscribeUnsubscribe} disabled={isButtonDisabled}>
+                {buttonLabel}
+            </button>
+        </div>
+    </template>
+
+    <template if:true={error}>
+        <div class="slds-text-color_error">
+            {error}
+        </div>
+    </template>
+</template>

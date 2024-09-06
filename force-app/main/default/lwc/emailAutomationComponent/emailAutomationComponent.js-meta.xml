@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <!-- Make the component available in Experience Builder (Community Sites) and Lightning Record Pages -->
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <!-- Make recordId available in Experience Builder -->
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="recordId" type="String" />
+        </targetConfig>
+
+        <!-- Make recordId available in Lightning Record Pages -->
+        <targetConfig targets="lightning__RecordPage">
+            <property name="recordId" type="String" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
