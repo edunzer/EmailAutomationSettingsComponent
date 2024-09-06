@@ -6,10 +6,10 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
 const columns = [
-    { label: 'Name', fieldName: 'Name', type: 'text', maxColumnWidth: 600 },  // Use 'Name' (standard field)
-    { label: 'Recipient Count', fieldName: 'Recipient_Count__c', type: 'number', initialWidth: 150, maxColumnWidth: 300, cellAttributes: { alignment: 'center' }  },  // Use 'Recipient_Count__c' (custom field)
-    { label: 'Allow Self Registration', fieldName: 'Allow_Self_Registration__c', type: 'boolean', initialWidth: 200, maxColumnWidth: 300, cellAttributes: { alignment: 'center' }  },  // Use 'Allow_Self_Registration__c'
-    { label: 'Allow Self Deregistration', fieldName: 'Allow_Self_Deregistration__c', type: 'boolean', initialWidth: 200, maxColumnWidth: 300, cellAttributes: { alignment: 'center' }  },  // Use 'Allow_Self_Deregistration__c'
+    { label: 'Name', fieldName: 'Name', type: 'text', maxColumnWidth: 600 },
+    { label: 'Recipient Count', fieldName: 'Recipient_Count__c', type: 'number', initialWidth: 150, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
+    { label: 'Allow Self Registration', fieldName: 'Allow_Self_Registration__c', type: 'boolean', initialWidth: 200, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
+    { label: 'Allow Self Deregistration', fieldName: 'Allow_Self_Deregistration__c', type: 'boolean', initialWidth: 200, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
     {
         label: 'Action',
         type: 'button',
@@ -18,10 +18,12 @@ const columns = [
         typeAttributes: {
             label: { fieldName: 'actionLabel' },
             name: 'subscribeUnsubscribe',
-            variant: { fieldName: 'buttonVariant' }
+            variant: { fieldName: 'buttonVariant' },
+            disabled: { fieldName: 'buttonDisabled' }  // Disable button based on registration/deregistration field values
         }
     }
 ];
+
 
 export default class EmailAutomationListViewComponent extends LightningElement {
     @track emailAutomations = [];
@@ -36,45 +38,43 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         this.wiredAutomationsResult = result;
         const { data, error } = result;
 
-        console.log('Result data:', data);  // Log the result data for debugging
-        console.log('Result error:', error);  // Log the error if any
-    
         if (data) {
-
-            console.log('Mapping data to emailAutomations: ', data.emailAutomations);  // Log the email automations being processed
-
             this.isLoading = false;
             this.emailAutomations = data.emailAutomations.map(wrapper => {
                 let actionLabel = 'Subscribe';
                 let buttonVariant = 'brand';
-    
+                let buttonDisabled = false;
+
+                // Check if user is subscribed
                 if (wrapper.userRecipient) {
                     actionLabel = 'Unsubscribe';
                     buttonVariant = 'destructive';
+                    // Disable Unsubscribe button if Allow_Self_Deregistration__c is false
+                    buttonDisabled = !wrapper.emailAutomation.Allow_Self_Deregistration__c;
+                } else {
+                    // Disable Subscribe button if Allow_Self_Registration__c is false
+                    buttonDisabled = !wrapper.emailAutomation.Allow_Self_Registration__c;
                 }
 
-                console.log('Processed email automation:', wrapper.emailAutomation);  // Log the processed emailAutomation data
-    
                 return {
-                    Id: wrapper.emailAutomation.Id,  // Correctly map the Id field
-                    Name: wrapper.emailAutomation.Name,  // Correctly map the Name field
-                    Recipient_Count__c: wrapper.emailAutomation.Recipient_Count__c,  // Ensure API field name matches
-                    Allow_Self_Registration__c: wrapper.emailAutomation.Allow_Self_Registration__c,  // Ensure correct API name
-                    Allow_Self_Deregistration__c: wrapper.emailAutomation.Allow_Self_Deregistration__c,  // Correct API name
+                    Id: wrapper.emailAutomation.Id,
+                    Name: wrapper.emailAutomation.Name,
+                    Recipient_Count__c: wrapper.emailAutomation.Recipient_Count__c,
+                    Allow_Self_Registration__c: wrapper.emailAutomation.Allow_Self_Registration__c,
+                    Allow_Self_Deregistration__c: wrapper.emailAutomation.Allow_Self_Deregistration__c,
                     actionLabel,
-                    buttonVariant
+                    buttonVariant,
+                    buttonDisabled  // Added the buttonDisabled property
                 };
             });
-            console.log('Final emailAutomations:', this.emailAutomations);  // Log final mapped data
 
             this.error = undefined;
         } else if (error) {
-            console.error('Error in wiredAutomations:', error);  // Log error if it exists
             this.isLoading = false;
             this.error = error;
             this.emailAutomations = [];
         }
-    }    
+    }
 
     handleRowAction(event) {
         const actionName = event.detail.action.name;
@@ -109,3 +109,4 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         this.dispatchEvent(event);
     }
 }
+
