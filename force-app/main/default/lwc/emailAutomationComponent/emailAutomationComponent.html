@@ -5,8 +5,9 @@
 
     <template if:false={isLoading}>
         <div class="button-container">
+            <!-- Replace the icon with text using buttonLabel -->
             <button class={subscribeButtonClass} onclick={handleSubscribeUnsubscribe}>
-                <lightning-icon icon-name={iconName} variant={iconVariant} alternative-text="Subscribe/Unsubscribe"></lightning-icon>
+                {buttonLabel}  <!-- Display "Subscribe" or "Unsubscribe" based on isSubscribed -->
             </button>
         </div>
     </template>

@@ -51,26 +51,12 @@ export default class EmailAutomationComponent extends LightningElement {
         this.dispatchEvent(event);
     }
 
-    get buttonLabel() {
-        return this.isSubscribed ? 'Unsubscribe' : 'Subscribe';
-    }
-
-    get buttonVariant() {
-        return this.isSubscribed ? 'destructive' : 'brand';
-    }
-
     // Dynamically get the class for the button
     get subscribeButtonClass() {
-        return `subscribe-button ${this.isSubscribed ? 'active' : ''}`;
+        return `subscribe-button ${this.isSubscribed ? 'unsubscribe' : ''}`;  // Add 'unsubscribe' class when unsubscribed
     }
 
-    // Define iconName based on subscription status
-    get iconName() {
-        return this.isSubscribed ? 'utility:check' : 'utility:adduser';
-    }
-
-    // Define the variant for the icon
-    get iconVariant() {
-        return this.isSubscribed ? 'inverse' : 'bare';
+    get buttonLabel() {
+        return this.isSubscribed ? 'Unsubscribe' : 'Subscribe';
     }
 }

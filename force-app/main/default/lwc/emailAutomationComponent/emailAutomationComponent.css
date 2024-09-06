@@ -2,22 +2,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10%;
+    padding: 5%;
 }
 
 .subscribe-button {
     position: relative;
-    background-color: transparent;
-    border-radius: 10px;
-    width: 80px;
-    height: 80px;
+    background-color: #0070d2; /* Salesforce blue for Subscribe */
+    border-radius: 7px; /* Increase border-radius slightly */
+    width: 280px; /* Increase width by 40% */
+    height: 70px; /* Increase height by 40% */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     padding: 0;
     transition: all 0.3s ease;
-    border: 2px solid #CCCCCC; /* Light grey border for non-active button */
+    border: 2px solid transparent; /* No border by default */
+    font-size: 1.68rem; /* Increase font-size by 40% */
+    font-weight: bold; /* Text remains bold */
+    color: #ffffff; /* White text color */
+    z-index: 1; /* Ensure the button content stays above pseudo-elements */
+}
+
+.subscribe-button.unsubscribe {
+    background-color: #d32f2f; /* Red for Unsubscribe */
+    border-color: #d32f2f; /* Match the border with the background */
 }
 
 .subscribe-button::before {
@@ -29,32 +38,15 @@
     bottom: 0;
     border-radius: inherit; /* Inherit the border radius */
     background-color: transparent;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    z-index: 0; /* Make sure it's behind the icon */
+    transition: background-color 0.3s ease;
+    z-index: -1; /* Ensure the pseudo-element stays behind the button */
 }
 
 .subscribe-button:hover::before {
-    background-color: rgba(0, 0, 0, 0.4); /* Darkening effect with 40% opacity */
-    border-color: rgba(0, 0, 0, 0.4); /* Darkening effect with 40% opacity */
+    background-color: rgba(0, 0, 0, 0.05); /* Light darkening effect on hover */
 }
 
-.subscribe-button.active {
-    background-color: #0070d2;
-    border-color: #0070d2;
-}
-
-.subscribe-button.active:hover::before {
-    background-color: rgba(0, 0, 0, 0.2); /* Slightly less darkening effect for active state */
-    border-color: rgba(0, 0, 0, 0.2); /* Slightly less darkening effect for active state */
-}
-
-.subscribe-button lightning-icon {
-    z-index: 1; /* Ensure icon stays on top */
-    --slds-c-icon-color-foreground: #CCCCCC;
-    width: 40px;
-    height: 40px;
-}
-
-.subscribe-button.active lightning-icon {
-    --slds-c-icon-color-foreground: #FFFFFF;
+.subscribe-button:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 4px rgba(0, 112, 210, 0.3); /* Custom focus shadow */
 }
