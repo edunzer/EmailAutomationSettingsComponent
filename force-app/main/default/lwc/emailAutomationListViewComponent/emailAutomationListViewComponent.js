@@ -6,7 +6,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
 const columns = [
-    { label: 'Name', fieldName: 'Name', type: 'text'},
+    { label: 'Name', fieldName: 'Name', type: 'text' },
     { label: 'Recipient Count', fieldName: 'Recipient_Count__c', type: 'number', initialWidth: 150, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
     { label: 'Allow Self Registration', fieldName: 'Allow_Self_Registration__c', type: 'boolean', initialWidth: 200, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
     { label: 'Allow Self Deregistration', fieldName: 'Allow_Self_Deregistration__c', type: 'boolean', initialWidth: 200, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
@@ -19,17 +19,22 @@ const columns = [
             label: { fieldName: 'actionLabel' },
             name: 'subscribeUnsubscribe',
             variant: { fieldName: 'buttonVariant' },
-            disabled: { fieldName: 'buttonDisabled' }  // Disable button based on registration/deregistration field values
+            disabled: { fieldName: 'buttonDisabled' }
         }
     }
 ];
 
-
 export default class EmailAutomationListViewComponent extends LightningElement {
     @track emailAutomations = [];
+    @track paginatedEmailAutomations = [];
     @track columns = columns;
     @track error;
     @track isLoading = true;
+
+    // Pagination variables
+    @track currentPage = 1;
+    @track pageSize = 5; // Number of records per page
+    @track totalPages = 0;
 
     wiredAutomationsResult;
 
@@ -49,10 +54,8 @@ export default class EmailAutomationListViewComponent extends LightningElement {
                 if (wrapper.userRecipient) {
                     actionLabel = 'Unsubscribe';
                     buttonVariant = 'destructive';
-                    // Disable Unsubscribe button if Allow_Self_Deregistration__c is false
                     buttonDisabled = !wrapper.emailAutomation.Allow_Self_Deregistration__c;
                 } else {
-                    // Disable Subscribe button if Allow_Self_Registration__c is false
                     buttonDisabled = !wrapper.emailAutomation.Allow_Self_Registration__c;
                 }
 
@@ -64,15 +67,41 @@ export default class EmailAutomationListViewComponent extends LightningElement {
                     Allow_Self_Deregistration__c: wrapper.emailAutomation.Allow_Self_Deregistration__c,
                     actionLabel,
                     buttonVariant,
-                    buttonDisabled  // Added the buttonDisabled property
+                    buttonDisabled
                 };
             });
 
+            // Initialize pagination
+            this.totalPages = Math.ceil(this.emailAutomations.length / this.pageSize);
+            this.updatePaginatedData();
             this.error = undefined;
         } else if (error) {
             this.isLoading = false;
             this.error = error;
             this.emailAutomations = [];
+        }
+    }
+
+    // Update the paginated data for the current page
+    updatePaginatedData() {
+        const startIndex = (this.currentPage - 1) * this.pageSize;
+        const endIndex = startIndex + this.pageSize;
+        this.paginatedEmailAutomations = this.emailAutomations.slice(startIndex, endIndex);
+    }
+
+    // Go to the next page
+    handleNextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage += 1;
+            this.updatePaginatedData();
+        }
+    }
+
+    // Go to the previous page
+    handlePreviousPage() {
+        if (this.currentPage > 1) {
+            this.currentPage -= 1;
+            this.updatePaginatedData();
         }
     }
 
@@ -108,5 +137,13 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         });
         this.dispatchEvent(event);
     }
-}
 
+    // Dynamically control next/previous button states
+    get disablePrevious() {
+        return this.currentPage === 1;
+    }
+
+    get disableNext() {
+        return this.currentPage === this.totalPages;
+    }
+}
