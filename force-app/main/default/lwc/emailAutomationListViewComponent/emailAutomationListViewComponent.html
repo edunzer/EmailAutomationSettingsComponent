@@ -1,5 +1,5 @@
 <template>
-    <lightning-card title="Email Automations">
+    <div class="datatable-wrapper">
         <template if:true={isLoading}>
             <lightning-spinner alternative-text="Loading Email Automations"></lightning-spinner>
         </template>
@@ -25,5 +25,5 @@
                 {error}
             </div>
         </template>
-    </lightning-card>
+    </div>
 </template>

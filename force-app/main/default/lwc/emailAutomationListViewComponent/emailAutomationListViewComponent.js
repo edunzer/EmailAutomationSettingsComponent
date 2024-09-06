@@ -6,7 +6,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
 const columns = [
-    { label: 'Name', fieldName: 'Name', type: 'text', maxColumnWidth: 600 },
+    { label: 'Name', fieldName: 'Name', type: 'text'},
     { label: 'Recipient Count', fieldName: 'Recipient_Count__c', type: 'number', initialWidth: 150, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
     { label: 'Allow Self Registration', fieldName: 'Allow_Self_Registration__c', type: 'boolean', initialWidth: 200, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
     { label: 'Allow Self Deregistration', fieldName: 'Allow_Self_Deregistration__c', type: 'boolean', initialWidth: 200, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },

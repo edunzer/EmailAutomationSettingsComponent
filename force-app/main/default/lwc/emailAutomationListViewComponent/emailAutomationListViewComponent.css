@@ -1,3 +1,16 @@
 .slds-text-color_error {
     color: #c23934; /* Salesforce Red for errors */
 }
+
+.datatable-wrapper {
+    display: flex;
+    justify-content: center; /* Center the datatable */
+    margin: 0 auto; /* Center the datatable-wrapper itself */
+    padding: .5rem; /* Optional padding for spacing */
+    background-color: #f3f3f3; /* Set the background color */
+    border-radius: 6px; /* Optional: Add border radius for a cleaner look */
+}
+
+lightning-datatable {
+    width: 100%; /* Make the datatable take up the full container width */
+}
