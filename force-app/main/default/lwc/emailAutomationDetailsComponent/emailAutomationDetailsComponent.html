@@ -1,8 +1,18 @@
 <template>
     <div class="details-container">
-        <template if:true={description}>
+        <!-- Render when a record is selected (based on recordId) -->
+        <template if:true={recordId}>
             <lightning-card title="Email Automation Details">
-                <p>{description}</p>
+                <!-- Show description if available -->
+                <template if:true={description}>
+                    <p>{description}</p>
+                </template>
+                <!-- Show a placeholder if no description is available -->
+                <template if:false={description}>
+                    <p>No description available.</p>
+                </template>
+
+                <!-- Display recipient information -->
                 <template if:true={recipients.length}>
                     <lightning-datatable
                         data={recipients}
@@ -15,6 +25,13 @@
                 <template if:false={recipients.length}>
                     <p>No recipients available.</p>
                 </template>
+            </lightning-card>
+        </template>
+
+        <!-- If no record is selected -->
+        <template if:false={recordId}>
+            <lightning-card title="Email Automation Details">
+                <p>Please select an email automation record to view details.</p>
             </lightning-card>
         </template>
     </div>
