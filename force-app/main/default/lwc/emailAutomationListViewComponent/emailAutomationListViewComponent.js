@@ -32,6 +32,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
     @track emailAutomations = [];
     @track paginatedEmailAutomations = [];
     @track columns = columns;
+    @track selectedRows = [];  // Track selected row
     @track error;
     @track isLoading = true;
 
@@ -90,6 +91,21 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         }
     }
 
+    // Handle row selection
+    handleRowSelection(event) {
+        const selectedRows = event.detail.selectedRows;
+        this.selectedRows = selectedRows;  // Track the selected row
+
+        if (selectedRows.length > 0) {
+            const selectedEmailAutomation = selectedRows[0];  // Single selection
+            const payload = {
+                recordId: selectedEmailAutomation.Id,
+                description: selectedEmailAutomation.Description__c
+            };
+            publish(this.messageContext, EMAIL_AUTOMATION_MESSAGE_CHANNEL, payload);
+        }
+    }
+
     // Update the paginated data for the current page
     updatePaginatedData() {
         const startIndex = (this.currentPage - 1) * this.pageSize;
@@ -113,7 +129,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         }
     }
 
-    // Publish the selected email automation to the message channel
+    // Subscribe/unsubscribe logic for button clicks
     handleRowAction(event) {
         const selectedEmailAutomation = event.detail.row;
         const actionName = event.detail.action.name;
@@ -122,13 +138,6 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         if (actionName === 'subscribeUnsubscribe') {
             const isSubscribed = selectedEmailAutomation.actionLabel === 'Unsubscribe';
             this.handleSubscribeUnsubscribe(emailAutomationId, isSubscribed);
-        } else {
-            // Publish the selected email automation's details
-            const payload = {
-                recordId: selectedEmailAutomation.Id,
-                description: selectedEmailAutomation.Description__c
-            };
-            publish(this.messageContext, EMAIL_AUTOMATION_MESSAGE_CHANNEL, payload);
         }
     }
 
