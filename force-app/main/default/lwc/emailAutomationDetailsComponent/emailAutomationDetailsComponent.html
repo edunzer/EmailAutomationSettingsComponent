@@ -24,14 +24,18 @@
 
             <!-- Display recipient information if available -->
             <template if:true={recipients.length}>
-                <lightning-datatable
-                    data={recipients}
-                    columns={columns}
-                    key-field="Id"
-                    hide-checkbox-column="true"
-                >
-                </lightning-datatable>
+                <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                    <lightning-datatable
+                        data={recipients}
+                        columns={columns}
+                        key-field="Id"
+                        hide-checkbox-column="true"
+                    >
+                    </lightning-datatable>
+                </div>
             </template>
+
+            <!-- Show "No recipients available" if no recipient data is present -->
             <template if:false={recipients.length}>
                 <div class="slds-text-align_center slds-m-around_medium slds-box">
                     No recipients available.
