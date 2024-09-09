@@ -1,0 +1,21 @@
+<template>
+    <div class="details-container">
+        <template if:true={description}>
+            <lightning-card title="Email Automation Details">
+                <p>{description}</p>
+                <template if:true={recipients.length}>
+                    <lightning-datatable
+                        data={recipients}
+                        columns={columns}
+                        key-field="Id"
+                        hide-checkbox-column="true"
+                    >
+                    </lightning-datatable>
+                </template>
+                <template if:false={recipients.length}>
+                    <p>No recipients available.</p>
+                </template>
+            </lightning-card>
+        </template>
+    </div>
+</template>
