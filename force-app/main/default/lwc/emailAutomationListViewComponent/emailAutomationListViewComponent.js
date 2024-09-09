@@ -5,6 +5,10 @@ import unsubscribeUser from '@salesforce/apex/EmailSubscriptionController.unsubs
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
+// Importing Lightning Message Service (LMS) and the message channel
+import { publish, MessageContext } from 'lightning/messageService';
+import EMAIL_AUTOMATION_MESSAGE_CHANNEL from '@salesforce/messageChannel/EmailAutomationMessageChannel__c'; // Import your message channel
+
 const columns = [
     { label: 'Email Name', fieldName: 'Name', type: 'text' },
     { label: 'Recipients', fieldName: 'Recipient_Count__c', type: 'number', initialWidth: 120, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
@@ -38,6 +42,9 @@ export default class EmailAutomationListViewComponent extends LightningElement {
 
     wiredAutomationsResult;
 
+    @wire(MessageContext)
+    messageContext;  // Required to send messages via LMS
+
     @wire(getEmailAutomationsWithRecipients)
     wiredAutomations(result) {
         this.wiredAutomationsResult = result;
@@ -62,6 +69,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
                 return {
                     Id: wrapper.emailAutomation.Id,
                     Name: wrapper.emailAutomation.Name,
+                    Description__c: wrapper.emailAutomation.Description__c, // Add description field
                     Recipient_Count__c: wrapper.emailAutomation.Recipient_Count__c,
                     Allow_Self_Registration__c: wrapper.emailAutomation.Allow_Self_Registration__c,
                     Allow_Self_Deregistration__c: wrapper.emailAutomation.Allow_Self_Deregistration__c,
@@ -105,13 +113,22 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         }
     }
 
+    // Publish the selected email automation to the message channel
     handleRowAction(event) {
+        const selectedEmailAutomation = event.detail.row;
         const actionName = event.detail.action.name;
-        const emailAutomationId = event.detail.row.Id;
+        const emailAutomationId = selectedEmailAutomation.Id;
 
         if (actionName === 'subscribeUnsubscribe') {
-            const isSubscribed = event.detail.row.actionLabel === 'Unsubscribe';
+            const isSubscribed = selectedEmailAutomation.actionLabel === 'Unsubscribe';
             this.handleSubscribeUnsubscribe(emailAutomationId, isSubscribed);
+        } else {
+            // Publish the selected email automation's details
+            const payload = {
+                recordId: selectedEmailAutomation.Id,
+                description: selectedEmailAutomation.Description__c
+            };
+            publish(this.messageContext, EMAIL_AUTOMATION_MESSAGE_CHANNEL, payload);
         }
     }
 
