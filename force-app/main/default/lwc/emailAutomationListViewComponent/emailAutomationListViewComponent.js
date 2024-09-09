@@ -33,7 +33,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
 
     // Pagination variables
     @track currentPage = 1;
-    @track pageSize = 5; // Number of records per page
+    @track pageSize = 15; // Number of records per page
     @track totalPages = 0;
 
     wiredAutomationsResult;
