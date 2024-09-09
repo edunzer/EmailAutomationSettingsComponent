@@ -26,6 +26,7 @@
             <!-- Display recipient information if available -->
             <template if:true={recipients.length}>
                 <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                    <p><strong>Recipients:</strong></p>
                     <lightning-datatable
                         data={recipients}
                         columns={columns}
