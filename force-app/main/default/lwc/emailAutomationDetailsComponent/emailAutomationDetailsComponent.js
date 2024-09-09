@@ -10,7 +10,7 @@ const recipientColumns = [
 
 export default class EmailAutomationDetailsComponent extends LightningElement {
     @track recordId;
-    @track description;
+    @track description = 'No description available'; // Set default text for description
     @track recipients = [];
     @track columns = recipientColumns;
     @track error;
@@ -34,7 +34,7 @@ export default class EmailAutomationDetailsComponent extends LightningElement {
     handleMessage(message) {
         console.log('Handling message:', message);
         this.recordId = message.recordId;
-        this.description = message.description;
+        this.description = message.description || 'No description available'; // Use placeholder if no description
         console.log(`Record ID: ${this.recordId}, Description: ${this.description}`);
         this.fetchRecipients();
     }
@@ -52,5 +52,10 @@ export default class EmailAutomationDetailsComponent extends LightningElement {
                 this.recipients = [];
                 this.error = error;
             });
+    }
+
+    // Computed property to check if the description is available
+    get descriptionAvailable() {
+        return this.description !== 'No description available'; // Returns true if the description is not the placeholder text
     }
 }

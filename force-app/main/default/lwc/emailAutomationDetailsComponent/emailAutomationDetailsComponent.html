@@ -1,38 +1,49 @@
 <template>
-    <div class="details-container">
-        <!-- Render when a record is selected (based on recordId) -->
-        <template if:true={recordId}>
-            <lightning-card title="Email Automation Details">
-                <!-- Show description if available -->
-                <template if:true={description}>
-                    <p>{description}</p>
-                </template>
-                <!-- Show a placeholder if no description is available -->
-                <template if:false={description}>
-                    <p>No description available.</p>
-                </template>
+    <lightning-card title="Details">
+        <div class="slds-m-around_medium">
+            <!-- Show message if no record is selected -->
+            <template if:true={message}>
+                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                    {message}
+                </div>
+            </template>
 
-                <!-- Display recipient information -->
-                <template if:true={recipients.length}>
-                    <lightning-datatable
-                        data={recipients}
-                        columns={columns}
-                        key-field="Id"
-                        hide-checkbox-column="true"
-                    >
-                    </lightning-datatable>
-                </template>
-                <template if:false={recipients.length}>
-                    <p>No recipients available.</p>
-                </template>
-            </lightning-card>
-        </template>
+            <!-- Show description if available -->
+            <template if:true={descriptionAvailable}>
+                <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                    <p><strong>Description:</strong> {description}</p>
+                </div>
+            </template>
 
-        <!-- If no record is selected -->
-        <template if:false={recordId}>
-            <lightning-card title="Email Automation Details">
-                <p>Please select an email automation record to view details.</p>
-            </lightning-card>
-        </template>
-    </div>
+            <!-- Show "No description available" if no description is present -->
+            <template if:false={descriptionAvailable}>
+                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                    No description available.
+                </div>
+            </template>
+
+            <!-- Display recipient information if available -->
+            <template if:true={recipients.length}>
+                <lightning-datatable
+                    data={recipients}
+                    columns={columns}
+                    key-field="Id"
+                    hide-checkbox-column="true"
+                >
+                </lightning-datatable>
+            </template>
+            <template if:false={recipients.length}>
+                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                    No recipients available.
+                </div>
+            </template>
+
+            <!-- Error message -->
+            <template if:true={error}>
+                <div class="slds-text-color_error slds-text-align_center slds-m-around_medium slds-box">
+                    {error}
+                </div>
+            </template>
+        </div>
+    </lightning-card>
 </template>
