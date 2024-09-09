@@ -11,13 +11,13 @@
                         data={paginatedEmailAutomations}
                         columns={columns}
                         key-field="Id"
-                        onrowaction={handleRowAction}
-                        hide-checkbox-column="true"
+                        selected-rows={selectedRows}  
+                        max-row-selection="1" 
+                        onrowselection={handleRowSelection} 
                     >
                     </lightning-datatable>
                 </div>
 
-                <!-- Pagination controls below the datatable -->
                 <lightning-layout horizontal-align="space">
                     <lightning-layout-item flexibility="auto">
                         <lightning-button 
