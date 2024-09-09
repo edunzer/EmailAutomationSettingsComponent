@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>EmailAutomationMessageChannel</masterLabel>
+    <isExposed>true</isExposed>
+    <description>Message Channel for Email Automation communication</description>
+</MessageChannel>

@@ -1,0 +1,55 @@
+<template>
+    <lightning-card title="Details">
+        <div class="slds-m-around_medium">
+            <!-- Show message if no record is selected -->
+            <template if:true={message}>
+                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                    {message}
+                </div>
+            </template>
+
+            <!-- Show description if available -->
+            <template if:true={descriptionAvailable}>
+                <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                    <p><strong>Description:</strong></p>
+                    <lightning-formatted-text value={description}></lightning-formatted-text> <!-- Handle long text formatting -->
+                </div>
+            </template>
+
+            <!-- Show "No description available" if no description is present -->
+            <template if:false={descriptionAvailable}>
+                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                    No description available.
+                </div>
+            </template>
+
+            <!-- Display recipient information if available -->
+            <template if:true={recipients.length}>
+                <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                    <p><strong>Recipients:</strong></p>
+                    <lightning-datatable
+                        data={recipients}
+                        columns={columns}
+                        key-field="Id"
+                        hide-checkbox-column="true"
+                    >
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <!-- Show "No recipients available" if no recipient data is present -->
+            <template if:false={recipients.length}>
+                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                    No recipients available.
+                </div>
+            </template>
+
+            <!-- Error message -->
+            <template if:true={error}>
+                <div class="slds-text-color_error slds-text-align_center slds-m-around_medium slds-box">
+                    {error}
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

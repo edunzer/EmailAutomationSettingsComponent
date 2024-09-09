@@ -5,8 +5,6 @@
 .datatable-wrapper {
     margin: 0 auto; /* Center the datatable-wrapper itself */
     padding: .5rem; /* Optional padding for spacing */
-    background-color: #f3f3f3; /* Set the background color */
-    border-radius: 6px; /* Optional: Add border radius for a cleaner look */
 }
 
 lightning-datatable {
