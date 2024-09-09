@@ -11,9 +11,10 @@
                         data={paginatedEmailAutomations}
                         columns={columns}
                         key-field="Id"
-                        selected-rows={selectedRows}  
-                        max-row-selection="1" 
-                        onrowselection={handleRowSelection} 
+                        selected-rows={selectedRows}
+                        max-row-selection="1"
+                        onrowselection={handleRowSelection}
+                        onrowaction={handleRowAction}
                     >
                     </lightning-datatable>
                 </div>
