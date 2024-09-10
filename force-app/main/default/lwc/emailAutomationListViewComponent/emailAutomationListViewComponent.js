@@ -10,7 +10,7 @@ import { publish, MessageContext } from 'lightning/messageService';
 import EMAIL_AUTOMATION_MESSAGE_CHANNEL from '@salesforce/messageChannel/EmailAutomationMessageChannel__c'; // Import your message channel
 
 const columns = [
-    { label: 'Email Name', fieldName: 'Name', type: 'text' },
+    { label: 'Email Name', fieldName: 'Email_Name__c', type: 'text' },
     { label: 'Recipients', fieldName: 'Recipient_Count__c', type: 'number', initialWidth: 120, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
     { label: 'Registration Allowed', fieldName: 'Allow_Self_Registration__c', type: 'boolean', initialWidth: 180, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
     { label: 'Deregistration Allowed', fieldName: 'Allow_Self_Deregistration__c', type: 'boolean', initialWidth: 180, maxColumnWidth: 300, cellAttributes: { alignment: 'center' } },
@@ -50,15 +50,15 @@ export default class EmailAutomationListViewComponent extends LightningElement {
     wiredAutomations(result) {
         this.wiredAutomationsResult = result;
         const { data, error } = result;
-
+    
         if (data) {
+            console.log('Fetched data:', JSON.stringify(data)); // Log the fetched data
             this.isLoading = false;
             this.emailAutomations = data.emailAutomations.map(wrapper => {
                 let actionLabel = 'Subscribe';
                 let buttonVariant = 'brand';
                 let buttonDisabled = false;
-
-                // Check if user is subscribed
+    
                 if (wrapper.userRecipient) {
                     actionLabel = 'Unsubscribe';
                     buttonVariant = 'destructive';
@@ -66,11 +66,11 @@ export default class EmailAutomationListViewComponent extends LightningElement {
                 } else {
                     buttonDisabled = !wrapper.emailAutomation.Allow_Self_Registration__c;
                 }
-
+    
                 return {
                     Id: wrapper.emailAutomation.Id,
-                    Name: wrapper.emailAutomation.Name,
-                    Description__c: wrapper.emailAutomation.Description__c, // Add description field
+                    Email_Name__c: wrapper.emailAutomation.Email_Name__c, // Check if this field is populated
+                    Description__c: wrapper.emailAutomation.Description__c,
                     Recipient_Count__c: wrapper.emailAutomation.Recipient_Count__c,
                     Allow_Self_Registration__c: wrapper.emailAutomation.Allow_Self_Registration__c,
                     Allow_Self_Deregistration__c: wrapper.emailAutomation.Allow_Self_Deregistration__c,
@@ -79,7 +79,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
                     buttonDisabled
                 };
             });
-
+    
             // Initialize pagination
             this.totalPages = Math.ceil(this.emailAutomations.length / this.pageSize);
             this.updatePaginatedData();
@@ -90,6 +90,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
             this.emailAutomations = [];
         }
     }
+    
 
     // Handle row selection
     handleRowSelection(event) {
