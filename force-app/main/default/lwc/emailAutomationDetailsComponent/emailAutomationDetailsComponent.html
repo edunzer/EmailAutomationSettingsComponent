@@ -1,73 +1,79 @@
 <template>
-    <lightning-card title="Email Automation Details">
+    <lightning-card title="Details">
         <div class="slds-m-around_medium">
-
-            <!-- Only show spinner when image is loading and a record is selected -->
+            <!-- Only show accordion when a record is selected -->
             <template if:true={recordId}>
-                <template if:true={isImageLoading}>
-                    <div class="slds-text-align_center slds-m-around_medium slds-box">
-                        <lightning-spinner alternative-text="Loading image"></lightning-spinner>
+
+                <template if:true={descriptionAvailable}>
+                    <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                        <lightning-formatted-text value={description}></lightning-formatted-text>
                     </div>
                 </template>
-
-                <!-- Show image if available after loading -->
-                <template if:false={isImageLoading}>
-                    <template if:true={imageUrl}>
-                        <div class="slds-text-align_center slds-m-around_medium slds-box">
-                            <img src={imageUrl} alt="Email Automation Image" style="max-width: 70%; height: auto;" />
-                        </div>
-                    </template>
-
-                    <!-- Show message if no image available -->
-                    <template if:false={imageUrl}>
-                        <div class="slds-text-align_center slds-m-around_medium slds-box">
-                            No image available.
-                        </div>
-                    </template>
+                <template if:false={descriptionAvailable}>
+                    <div class="slds-text-align_center slds-m-around_medium slds-box">
+                        No description available.
+                    </div>
                 </template>
+                
+                <lightning-accordion allow-multiple-sections-open>
+
+                    <!-- Recipients Section with dynamic recipient count in the label -->
+                    <lightning-accordion-section label={recipientLabel} name="recipients">
+                        <template if:true={recipients.length}>
+                            <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                                <lightning-datatable
+                                    data={recipients}
+                                    columns={columns}
+                                    key-field="Id"
+                                    hide-checkbox-column="true"
+                                >
+                                </lightning-datatable>
+                            </div>
+                        </template>
+                        <template if:false={recipients.length}>
+                            <div class="slds-text-align_center slds-m-around_medium slds-box">
+                                No recipients available.
+                            </div>
+                        </template>
+                    </lightning-accordion-section>
+
+                    <!-- Image Section (Closed by default) -->
+                    <lightning-accordion-section label="Email Example" name="image">
+                        <template if:true={isImageLoading}>
+                            <div class="slds-text-align_center slds-m-around_medium slds-box">
+                                <lightning-spinner alternative-text="Loading image"></lightning-spinner>
+                            </div>
+                        </template>
+                        <template if:false={isImageLoading}>
+                            <template if:true={imageUrl}>
+                                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                                    <img src={imageUrl} alt="Email Automation Image" style="max-width: 70%; height: auto;" />
+                                </div>
+                            </template>
+                            <template if:false={imageUrl}>
+                                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                                    No image available.
+                                </div>
+                            </template>
+                        </template>
+                    </lightning-accordion-section>
+
+                    <!-- Error message -->
+                    <template if:true={error}>
+                        <div class="slds-text-color_error slds-text-align_center slds-m-around_medium slds-box">
+                            {error}
+                        </div>
+                    </template>
+                </lightning-accordion>
             </template>
 
-            <!-- Show description if available -->
-            <template if:true={descriptionAvailable}>
-                <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
-                    <p><strong>Description:</strong></p>
-                    <lightning-formatted-text value={description}></lightning-formatted-text>
-                </div>
-            </template>
-
-            <!-- Show "No description available" if no description is present -->
-            <template if:false={descriptionAvailable}>
+            <!-- Show message when no record is selected -->
+            <template if:false={recordId}>
                 <div class="slds-text-align_center slds-m-around_medium slds-box">
-                    No description available.
+                    Please select a record to view details.
                 </div>
             </template>
 
-            <!-- Display recipient information if available -->
-            <template if:true={recipients.length}>
-                <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
-                    <lightning-datatable
-                        data={recipients}
-                        columns={columns}
-                        key-field="Id"
-                        hide-checkbox-column="true"
-                    >
-                    </lightning-datatable>
-                </div>
-            </template>
-
-            <!-- Show "No recipients available" if no recipient data is present -->
-            <template if:false={recipients.length}>
-                <div class="slds-text-align_center slds-m-around_medium slds-box">
-                    No recipients available.
-                </div>
-            </template>
-
-            <!-- Error message -->
-            <template if:true={error}>
-                <div class="slds-text-color_error slds-text-align_center slds-m-around_medium slds-box">
-                    {error}
-                </div>
-            </template>
         </div>
     </lightning-card>
 </template>
