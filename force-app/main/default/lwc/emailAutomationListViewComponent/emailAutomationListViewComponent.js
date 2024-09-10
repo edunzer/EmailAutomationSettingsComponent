@@ -79,8 +79,8 @@ export default class EmailAutomationListViewComponent extends LightningElement {
                 };
             });
 
-            this.filteredEmailAutomations = this.emailAutomations; // Initially display all records
-            this.calculateTotalPages(); // Calculate total pages after fetching data
+            this.filteredEmailAutomations = this.emailAutomations;
+            this.calculateTotalPages();
             this.updatePaginatedData();
             this.error = undefined;
         } else if (error) {
@@ -104,17 +104,17 @@ export default class EmailAutomationListViewComponent extends LightningElement {
     // Filter email automations based on search term and recalculate pagination
     filterEmailAutomations() {
         if (this.searchTerm) {
-            this.filteredEmailAutomations = this.emailAutomations.filter(automation => 
+            this.filteredEmailAutomations = this.emailAutomations.filter(automation =>
                 automation.Email_Name__c && automation.Email_Name__c.toLowerCase().includes(this.searchTerm)
             );
+            this.currentPage = Math.min(this.currentPage, Math.ceil(this.filteredEmailAutomations.length / this.pageSize) || 1); // Revalidate the current page
         } else {
             this.filteredEmailAutomations = [...this.emailAutomations]; // Reset to full list
         }
-
-        this.currentPage = 1; // Reset to the first page after filtering
+    
         this.calculateTotalPages();
         this.updatePaginatedData();
-    }
+    } 
 
     // Update the paginated data for the current page
     updatePaginatedData() {
@@ -167,17 +167,42 @@ export default class EmailAutomationListViewComponent extends LightningElement {
 
     handleSubscribeUnsubscribe(emailAutomationId, isSubscribed) {
         const action = isSubscribed ? unsubscribeUser : subscribeUser;
-
+    
+        console.log(`Starting subscription action for record: ${emailAutomationId}, Subscribed: ${isSubscribed}`);
+    
         action({ emailAutomationId })
             .then(() => {
                 const message = isSubscribed ? 'Unsubscribed successfully' : 'Subscribed successfully';
                 this.showToast('Success', message, 'success');
-                return refreshApex(this.wiredAutomationsResult);
+                
+                // After refresh, maintain current page and reapply the filter
+                return refreshApex(this.wiredAutomationsResult).then(() => {
+                    console.log('Data refreshed, reapplying filter and current page');
+                    this.filterEmailAutomations(); // Reapply filter to the updated data
+                    this.reapplyCurrentPage(); // Apply pagination logic based on the filtered data
+                });
             })
             .catch(error => {
+                console.error('Error processing subscription:', error.body.message);
                 this.showToast('Error', 'Error processing subscription: ' + error.body.message, 'error');
             });
     }
+    
+    reapplyCurrentPage() {
+        const totalRecords = this.filteredEmailAutomations.length;
+        const maxPage = Math.ceil(totalRecords / this.pageSize);
+    
+        console.log(`Total Records: ${totalRecords}, Max Page: ${maxPage}, Current Page: ${this.currentPage}`);
+    
+        if (this.currentPage > maxPage) {
+            console.log(`Adjusting current page from ${this.currentPage} to ${maxPage} due to reduced records.`);
+            this.currentPage = maxPage || 1;  // Ensure the current page is valid and fallback to page 1 if maxPage is 0
+        }
+    
+        console.log(`Current page after reapplying: ${this.currentPage}`);
+        this.updatePaginatedData();
+    }
+           
 
     showToast(title, message, variant) {
         const event = new ShowToastEvent({
