@@ -1,26 +1,28 @@
 <template>
     <lightning-card title="Details">
         <div class="slds-m-around_medium">
-            <!-- Only show accordion when a record is selected -->
+            <!-- Only show tabset when a record is selected -->
             <template if:true={recordId}>
+                <lightning-tabset>
+                    <!-- Details Tab -->
+                    <lightning-tab label="Info">
+                        <!-- Description Section -->
+                        <template if:true={descriptionAvailable}>
+                            <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                                <p class="slds-p-bottom_xx-small"><strong>Description:</strong></p>
+                                <lightning-formatted-text value={description}></lightning-formatted-text>
+                            </div>
+                        </template>
+                        <template if:false={descriptionAvailable}>
+                            <div class="slds-text-align_center slds-m-around_medium slds-box">
+                                No description available.
+                            </div>
+                        </template>
 
-                <template if:true={descriptionAvailable}>
-                    <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
-                        <lightning-formatted-text value={description}></lightning-formatted-text>
-                    </div>
-                </template>
-                <template if:false={descriptionAvailable}>
-                    <div class="slds-text-align_center slds-m-around_medium slds-box">
-                        No description available.
-                    </div>
-                </template>
-                
-                <lightning-accordion allow-multiple-sections-open>
-
-                    <!-- Recipients Section with dynamic recipient count in the label -->
-                    <lightning-accordion-section label={recipientLabel} name="recipients">
+                        <!-- Recipients Section -->
                         <template if:true={recipients.length}>
                             <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
+                                <p class="slds-p-bottom_xx-small"><strong>Recipients:</strong></p>
                                 <lightning-datatable
                                     data={recipients}
                                     columns={columns}
@@ -35,10 +37,10 @@
                                 No recipients available.
                             </div>
                         </template>
-                    </lightning-accordion-section>
+                    </lightning-tab>
 
-                    <!-- Image Section (Closed by default) -->
-                    <lightning-accordion-section label="Email Example" name="image">
+                    <!-- Email Example Tab -->
+                    <lightning-tab label="Email Example">
                         <template if:true={isImageLoading}>
                             <div class="slds-text-align_center slds-m-around_medium slds-box">
                                 <lightning-spinner alternative-text="Loading image"></lightning-spinner>
@@ -56,15 +58,15 @@
                                 </div>
                             </template>
                         </template>
-                    </lightning-accordion-section>
+                    </lightning-tab>
+                </lightning-tabset>
 
-                    <!-- Error message -->
-                    <template if:true={error}>
-                        <div class="slds-text-color_error slds-text-align_center slds-m-around_medium slds-box">
-                            {error}
-                        </div>
-                    </template>
-                </lightning-accordion>
+                <!-- Error message -->
+                <template if:true={error}>
+                    <div class="slds-text-color_error slds-text-align_center slds-m-around_medium slds-box">
+                        {error}
+                    </div>
+                </template>
             </template>
 
             <!-- Show message when no record is selected -->
@@ -73,7 +75,6 @@
                     Please select a record to view details.
                 </div>
             </template>
-
         </div>
     </lightning-card>
 </template>
