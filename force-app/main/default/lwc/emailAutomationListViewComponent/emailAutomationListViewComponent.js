@@ -29,16 +29,16 @@ const columns = [
 export default class EmailAutomationListViewComponent extends LightningElement {
     @track emailAutomations = [];
     @track paginatedEmailAutomations = [];
-    @track filteredEmailAutomations = []; // To store filtered data
+    @track filteredEmailAutomations = [];
     @track columns = columns;
-    @track selectedRows = [];  // Track selected row
+    @track selectedRows = [];
     @track error;
     @track isLoading = true;
-    @track searchTerm = ''; // To store the search term
+    @track searchTerm = '';
 
     // Pagination variables
     @track currentPage = 1;
-    @track pageSize = 10; // Number of records per page
+    @track pageSize = 10;
     @track totalPages = 0;
 
     wiredAutomationsResult;
@@ -80,6 +80,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
             });
 
             this.filteredEmailAutomations = this.emailAutomations; // Initially display all records
+            this.calculateTotalPages(); // Calculate total pages after fetching data
             this.updatePaginatedData();
             this.error = undefined;
         } else if (error) {
@@ -89,22 +90,30 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         }
     }
 
+    // Calculate total pages based on filtered data
+    calculateTotalPages() {
+        this.totalPages = Math.ceil(this.filteredEmailAutomations.length / this.pageSize);
+    }
+
     // Handle search input change
     handleSearchChange(event) {
-        this.searchTerm = event.target.value.toLowerCase(); // Store the search term and convert to lowercase for case-insensitive search
+        this.searchTerm = event.target.value.toLowerCase();
         this.filterEmailAutomations();
     }
 
-    // Filter email automations based on the search term
+    // Filter email automations based on search term and recalculate pagination
     filterEmailAutomations() {
         if (this.searchTerm) {
             this.filteredEmailAutomations = this.emailAutomations.filter(automation => 
                 automation.Email_Name__c && automation.Email_Name__c.toLowerCase().includes(this.searchTerm)
             );
         } else {
-            this.filteredEmailAutomations = [...this.emailAutomations]; // Reset to full list if no search term
+            this.filteredEmailAutomations = [...this.emailAutomations]; // Reset to full list
         }
-        this.updatePaginatedData(); // Update the paginated data
+
+        this.currentPage = 1; // Reset to the first page after filtering
+        this.calculateTotalPages();
+        this.updatePaginatedData();
     }
 
     // Update the paginated data for the current page
@@ -129,7 +138,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         }
     }
 
-    // Pagination controls
+    // Handle pagination actions
     handleNextPage() {
         if (this.currentPage < this.totalPages) {
             this.currentPage += 1;
@@ -144,7 +153,7 @@ export default class EmailAutomationListViewComponent extends LightningElement {
         }
     }
 
-    // Subscribe/unsubscribe logic
+    // Subscribe/unsubscribe logic for button clicks
     handleRowAction(event) {
         const selectedEmailAutomation = event.detail.row;
         const actionName = event.detail.action.name;
@@ -185,6 +194,6 @@ export default class EmailAutomationListViewComponent extends LightningElement {
     }
 
     get disableNext() {
-        return this.currentPage === this.totalPages;
+        return this.currentPage === this.totalPages || this.totalPages === 0;
     }
 }
