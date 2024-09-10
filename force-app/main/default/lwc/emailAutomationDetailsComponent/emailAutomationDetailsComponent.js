@@ -68,7 +68,7 @@ export default class EmailAutomationDetailsComponent extends LightningElement {
                 console.error('Error fetching image:', error);
                 this.imageUrl = null; // Clear the image URL if error occurs
             });
-    }
+    }    
 
     // Computed property to check if the description is available
     get descriptionAvailable() {

@@ -20,14 +20,17 @@ public with sharing class EmailAutomationDetailsController {
 
             // Query for the latest version of the document (the image)
             ContentVersion contentVersion = [
-                SELECT ContentUrl 
+                SELECT Id 
                 FROM ContentVersion 
                 WHERE ContentDocumentId = :docLink.ContentDocumentId 
                 ORDER BY VersionNumber DESC 
                 LIMIT 1
             ];
 
-            return contentVersion.ContentUrl;
+            // Construct the URL for accessing the image
+            String baseUrl = URL.getOrgDomainUrl().toExternalForm();
+            String imageUrl = baseUrl + '/sfc/servlet.shepherd/version/download/' + contentVersion.Id;
+            return imageUrl;
         } catch (Exception e) {
             System.debug('Error fetching image: ' + e.getMessage());
             return null;
