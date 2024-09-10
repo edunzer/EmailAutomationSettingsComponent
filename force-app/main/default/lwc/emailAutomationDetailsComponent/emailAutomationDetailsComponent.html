@@ -1,10 +1,18 @@
 <template>
     <lightning-card title="Details">
         <div class="slds-m-around_medium">
-            <!-- Show message if no record is selected -->
-            <template if:true={message}>
+
+            <!-- Show image if available -->
+            <template if:true={imageUrl}>
                 <div class="slds-text-align_center slds-m-around_medium slds-box">
-                    {message}
+                    <img src={imageUrl} alt="Email Automation Image" style="max-width: 100%; height: auto;" />
+                </div>
+            </template>
+
+            <!-- Show message if no image available -->
+            <template if:false={imageUrl}>
+                <div class="slds-text-align_center slds-m-around_medium slds-box">
+                    No image available.
                 </div>
             </template>
 
@@ -12,7 +20,7 @@
             <template if:true={descriptionAvailable}>
                 <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
                     <p><strong>Description:</strong></p>
-                    <lightning-formatted-text value={description}></lightning-formatted-text> <!-- Handle long text formatting -->
+                    <lightning-formatted-text value={description}></lightning-formatted-text>
                 </div>
             </template>
 
@@ -26,7 +34,6 @@
             <!-- Display recipient information if available -->
             <template if:true={recipients.length}>
                 <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
-                    <p><strong>Recipients:</strong></p>
                     <lightning-datatable
                         data={recipients}
                         columns={columns}
