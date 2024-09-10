@@ -16,7 +16,7 @@ export default class EmailAutomationDetailsComponent extends LightningElement {
     @track columns = recipientColumns;
     @track imageUrl; // Track the image URL
     @track error;
-    @track isImageLoading = true; // Track the loading state for the image
+    @track isImageLoading = false; // Track the loading state for the image
 
     subscription = null;
 
@@ -65,17 +65,21 @@ export default class EmailAutomationDetailsComponent extends LightningElement {
 
     fetchImage() {
         console.log('Fetching image for recordId:', this.recordId);
-        this.isImageLoading = true; // Set the loading state to true
-        getImageForEmailAutomation({ recordId: this.recordId })
-            .then((imageUrl) => {
-                this.imageUrl = imageUrl; // Set the image URL
-                this.isImageLoading = false; // Set the loading state to false once the image is fetched
-                console.log('Image URL fetched:', this.imageUrl);
-            })
-            .catch((error) => {
-                console.error('Error fetching image:', error);
-                this.imageUrl = null; // Clear the image URL if error occurs
-                this.isImageLoading = false; // Stop loading if there's an error
-            });
+
+        // Ensure loading spinner only shows when recordId is available
+        if (this.recordId) {
+            this.isImageLoading = true;
+            getImageForEmailAutomation({ recordId: this.recordId })
+                .then((imageUrl) => {
+                    this.imageUrl = imageUrl; // Set the image URL
+                    this.isImageLoading = false; // Stop loading spinner
+                    console.log('Image URL fetched:', this.imageUrl);
+                })
+                .catch((error) => {
+                    console.error('Error fetching image:', error);
+                    this.imageUrl = null; // Clear the image URL if error occurs
+                    this.isImageLoading = false; // Stop loading spinner on error
+                });
+        }
     }
 }
