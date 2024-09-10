@@ -1,19 +1,28 @@
 <template>
-    <lightning-card title="Details">
+    <lightning-card title="Email Automation Details">
         <div class="slds-m-around_medium">
 
-            <!-- Show image if available -->
-            <template if:true={imageUrl}>
+            <!-- Show loading spinner while the image is being fetched -->
+            <template if:true={isImageLoading}>
                 <div class="slds-text-align_center slds-m-around_medium slds-box">
-                    <img src={imageUrl} alt="Email Automation Image" style="max-width: 100%; height: auto;" />
+                    <lightning-spinner alternative-text="Loading image"></lightning-spinner>
                 </div>
             </template>
 
-            <!-- Show message if no image available -->
-            <template if:false={imageUrl}>
-                <div class="slds-text-align_center slds-m-around_medium slds-box">
-                    No image available.
-                </div>
+            <!-- Show image if available after loading -->
+            <template if:false={isImageLoading}>
+                <template if:true={imageUrl}>
+                    <div class="slds-text-align_center slds-m-around_medium slds-box">
+                        <img src={imageUrl} alt="Email Automation Image" style="max-width: 100%; height: auto;" />
+                    </div>
+                </template>
+
+                <!-- Show message if no image available -->
+                <template if:false={imageUrl}>
+                    <div class="slds-text-align_center slds-m-around_medium slds-box">
+                        No image available.
+                    </div>
+                </template>
             </template>
 
             <!-- Show description if available -->
