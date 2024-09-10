@@ -63,6 +63,11 @@ export default class EmailAutomationDetailsComponent extends LightningElement {
             });
     }
 
+    // Dynamically compute the recipient count label
+    get recipientLabel() {
+        return `Recipients (${this.recipients.length})`;
+    }
+
     fetchImage() {
         console.log('Fetching image for recordId:', this.recordId);
 
