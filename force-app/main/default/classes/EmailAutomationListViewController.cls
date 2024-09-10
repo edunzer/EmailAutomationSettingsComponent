@@ -5,7 +5,7 @@ public with sharing class EmailAutomationListViewController {
         Id currentUserId = UserInfo.getUserId();
 
         // Query Email Automation records
-        List<Email_Automation__c> emailAutomations = [SELECT Id, Name, Description__c, Recipient_Count__c, Allow_Self_Registration__c, Allow_Self_Deregistration__c
+        List<Email_Automation__c> emailAutomations = [SELECT Id, Name, Email_Name__c, Description__c, Recipient_Count__c, Allow_Self_Registration__c, Allow_Self_Deregistration__c
                                                       FROM Email_Automation__c];
 
         // Collect Email Automation IDs for further processing
