@@ -1,12 +1,21 @@
 <template>
     <lightning-card title="Available Email Automations">
         <div class="slds-m-around_medium">
+
+            <!-- Search Box -->
+            <lightning-input 
+                type="search" 
+                label="Search by Email Name" 
+                placeholder="Search Email Name" 
+                onchange={handleSearchChange}>
+            </lightning-input>
+
             <template if:true={isLoading}>
                 <lightning-spinner alternative-text="Loading Email Automations"></lightning-spinner>
             </template>
 
             <template if:false={isLoading}>
-                <template if:true={emailAutomations.length}>
+                <template if:true={filteredEmailAutomations.length}>
                     <div class="slds-p-horizontal_small slds-m-around_medium slds-box">
                         <lightning-datatable
                             data={paginatedEmailAutomations}
@@ -46,7 +55,7 @@
                     </lightning-layout>
                 </template>
 
-                <template if:false={emailAutomations.length}>
+                <template if:false={filteredEmailAutomations.length}>
                     <div>No Email Automations available.</div>
                 </template>
             </template>
