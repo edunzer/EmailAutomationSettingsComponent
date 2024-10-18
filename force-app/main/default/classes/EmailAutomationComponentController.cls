@@ -3,29 +3,45 @@ public with sharing class EmailAutomationComponentController {
     @AuraEnabled(cacheable=true)
     public static EmailAutomationWrapper getEmailAutomationWithRecipient(Id recordId) {
         Id currentUserId = UserInfo.getUserId();
+        System.debug('Running getEmailAutomationWithRecipient...');
+        System.debug('Record ID: ' + recordId);
+        System.debug('Current User ID: ' + currentUserId);
 
         // Check if recordId is null
         if (recordId == null) {
+            System.debug('Record ID is null.');
             throw new AuraHandledException('Record ID is null. Cannot fetch Email Automation.');
         }
 
         try {
             // Query to get the Email Automation record based on recordId
-            Email_Automation__c emailAutomation = [SELECT Id, Name, Description__c, Recipient_Count__c, Allow_Self_Registration__c, Allow_Self_Deregistration__c 
-                                                   FROM Email_Automation__c 
-                                                   WHERE Id = :recordId 
-                                                   LIMIT 1];
+            Email_Automation__c emailAutomation;
+            try {
+                emailAutomation = [SELECT Id, Name, Description__c, Recipient_Count__c, Allow_Self_Registration__c, Allow_Self_Deregistration__c 
+                                   FROM Email_Automation__c 
+                                   WHERE Id = :recordId 
+                                   LIMIT 1];
+                System.debug('Email Automation record found: ' + emailAutomation.Id);
+            } catch (QueryException qe) {
+                System.debug('QueryException: ' + qe.getMessage());
+                throw new AuraHandledException('Unable to find the requested record. Please check the record ID.');
+            }
 
             // Query to get the recipient associated with the current user for this email automation
-            Email_Recipient__c userRecipient;
+            Email_Recipient__c userRecipient = null;
             try {
-                userRecipient = [SELECT Id, Email_Automation__c, Type__c, User__c 
-                                 FROM Email_Recipient__c 
-                                 WHERE Email_Automation__c = :emailAutomation.Id 
-                                 AND User__c = :currentUserId 
-                                 LIMIT 1];
-            } catch (Exception e) {
-                userRecipient = null; // If no recipient found, set it to null
+                userRecipient = [
+                    SELECT Id, Email_Automation__c, Type__c, User__c 
+                    FROM Email_Recipient__c 
+                    WHERE Email_Automation__c = :emailAutomation.Id 
+                    AND User__c = :currentUserId 
+                    LIMIT 1
+                ];
+                System.debug('Email Recipient found: ' + userRecipient.Id);
+            } catch (QueryException qe) {
+                System.debug('No recipient found for user.');
+                // Setting userRecipient to null if no recipient found
+                userRecipient = null;
             }
 
             // Wrap the Email Automation and associated recipient in an EmailAutomationWrapper
@@ -34,9 +50,8 @@ public with sharing class EmailAutomationComponentController {
             return automationWrapper;
 
         } catch (Exception e) {
-            // Log the error and throw a handled exception to the client
             System.debug('Error in getEmailAutomationWithRecipient: ' + e.getMessage());
-            throw new AuraHandledException('Error in getEmailAutomationWithRecipient: ' + e.getMessage());
+            throw new AuraHandledException('An error occurred while fetching email automation details.');
         }
     }
 
