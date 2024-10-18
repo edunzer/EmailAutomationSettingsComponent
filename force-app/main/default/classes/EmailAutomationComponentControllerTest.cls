@@ -33,7 +33,7 @@ public class EmailAutomationComponentControllerTest {
 
         Test.startTest();
         // Call the method with a valid recordId
-        System.runAs(testUser) { // Ensure we run the test as the correct active user
+        System.runAs(testUser) { 
             EmailAutomationComponentController.EmailAutomationWrapper result = EmailAutomationComponentController.getEmailAutomationWithRecipient(emailAutomation.Id);
             System.assertNotEquals(null, result, 'Result should not be null');
             System.assertEquals(emailAutomation.Id, result.emailAutomation.Id, 'EmailAutomation Id mismatch');
@@ -50,7 +50,6 @@ public class EmailAutomationComponentControllerTest {
             EmailAutomationComponentController.getEmailAutomationWithRecipient(null);
             System.assert(false, 'Expected AuraHandledException for null recordId');
         } catch (AuraHandledException e) {
-            // Ensure the exception message is exactly what's expected
             System.assertEquals('Record ID is null. Cannot fetch Email Automation.', e.getMessage(), 'Unexpected exception message.');
         } catch (Exception ex) {
             System.assert(false, 'Unexpected exception thrown: ' + ex.getMessage());
@@ -60,10 +59,8 @@ public class EmailAutomationComponentControllerTest {
 
     @isTest
     static void testGetEmailAutomationWithRecipient_NoRecipient() {
-        // Get test data
         Email_Automation__c emailAutomation = [SELECT Id FROM Email_Automation__c LIMIT 1];
 
-        // Find an active System Administrator user who has no associated recipient
         Profile sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
         User testUserWithoutRecipient = [SELECT Id FROM User WHERE ProfileId = :sysAdminProfile.Id AND IsActive = true AND Id != :UserInfo.getUserId() LIMIT 1];
 
@@ -72,10 +69,7 @@ public class EmailAutomationComponentControllerTest {
 
         Test.startTest();
         System.runAs(testUserWithoutRecipient) {
-            // Call the method with valid recordId but no associated recipient
             EmailAutomationComponentController.EmailAutomationWrapper result = EmailAutomationComponentController.getEmailAutomationWithRecipient(emailAutomation.Id);
-
-            // Verify the result
             System.assertNotEquals(null, result);
             System.assertEquals(emailAutomation.Id, result.emailAutomation.Id);
             System.assertEquals(null, result.userRecipient); // No recipient for this user
@@ -85,7 +79,6 @@ public class EmailAutomationComponentControllerTest {
 
     @isTest
     static void testGetEmailAutomationWithRecipient_QueryException() {
-        // Create invalid recordId
         Id invalidId = '001000000000000'; // An invalid Id that doesn't exist
 
         Test.startTest();
@@ -93,7 +86,6 @@ public class EmailAutomationComponentControllerTest {
             EmailAutomationComponentController.getEmailAutomationWithRecipient(invalidId);
             System.assert(false, 'Expected AuraHandledException for invalid recordId');
         } catch (AuraHandledException e) {
-            // Ensure the exception message is exactly what's expected
             System.assertEquals('Unable to find the requested record. Please check the record ID.', e.getMessage(), 'Unexpected exception message.');
         } catch (Exception ex) {
             System.assert(false, 'Unexpected exception thrown: ' + ex.getMessage());
