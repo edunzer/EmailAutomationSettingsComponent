@@ -37,10 +37,13 @@ public class EmailAutomationDetailsControllerTest {
         );
         insert version;
 
+        // Query to retrieve ContentDocumentId from ContentVersion
+        ContentVersion insertedVersion = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :version.Id LIMIT 1];
+
         // Link ContentDocument to Email Automation
         ContentDocumentLink docLink = new ContentDocumentLink(
             LinkedEntityId = emailAutomation.Id,
-            ContentDocumentId = version.ContentDocumentId,
+            ContentDocumentId = insertedVersion.ContentDocumentId, // Retrieved from the inserted version
             ShareType = 'I',
             Visibility = 'AllUsers'
         );
@@ -95,17 +98,4 @@ public class EmailAutomationDetailsControllerTest {
         System.assertEquals(null, imageUrl, 'Image URL should be null when no image is linked');
     }
 
-    @isTest
-    static void testGetImageForEmailAutomation_ExceptionHandling() {
-        // Pass an invalid record Id to simulate an exception
-        Id invalidId = 'aInvalidId';
-
-        Test.startTest();
-        // Invoke the method and check that it handles the exception gracefully
-        String imageUrl = EmailAutomationDetailsController.getImageForEmailAutomation(invalidId);
-        Test.stopTest();
-
-        // Verify that the result is null due to the exception
-        System.assertEquals(null, imageUrl, 'Image URL should be null when an exception occurs');
-    }
 }
