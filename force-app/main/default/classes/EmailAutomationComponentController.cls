@@ -49,6 +49,9 @@ public with sharing class EmailAutomationComponentController {
 
             return automationWrapper;
 
+        } catch (AuraHandledException e) {
+            // Exception thrown in the method, re-throw
+            throw e;
         } catch (Exception e) {
             System.debug('Error in getEmailAutomationWithRecipient: ' + e.getMessage());
             throw new AuraHandledException('An error occurred while fetching email automation details.');

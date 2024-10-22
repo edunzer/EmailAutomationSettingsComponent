@@ -62,7 +62,8 @@ public class EmailAutomationComponentControllerTest {
         Email_Automation__c emailAutomation = [SELECT Id FROM Email_Automation__c LIMIT 1];
 
         Profile sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
-        User testUserWithoutRecipient = [SELECT Id FROM User WHERE ProfileId = :sysAdminProfile.Id AND IsActive = true AND Id != :UserInfo.getUserId() LIMIT 1];
+        // Fetch another user that doesn't have a recipient
+        User testUserWithoutRecipient = [SELECT Id FROM User WHERE ProfileId = :sysAdminProfile.Id AND IsActive = true LIMIT 1];
 
         // Ensure no recipients for this user exist
         delete [SELECT Id FROM Email_Recipient__c WHERE User__c = :testUserWithoutRecipient.Id];
@@ -79,7 +80,8 @@ public class EmailAutomationComponentControllerTest {
 
     @isTest
     static void testGetEmailAutomationWithRecipient_QueryException() {
-        Id invalidId = '001000000000000'; // An invalid Id that doesn't exist
+        // Invalid Id format for Email_Automation__c (must be 18 characters and start with 'a')
+        Id invalidId = 'a000000000000001AAA'; // An invalid Id for a custom object
 
         Test.startTest();
         try {
