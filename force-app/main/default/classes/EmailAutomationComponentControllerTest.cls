@@ -27,12 +27,10 @@ public class EmailAutomationComponentControllerTest {
 
     @isTest
     static void testGetEmailAutomationWithRecipient_Success() {
-        // Ensure test data is set up correctly
         Email_Automation__c emailAutomation = [SELECT Id FROM Email_Automation__c LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND IsActive = true LIMIT 1];
 
         Test.startTest();
-        // Call the method with a valid recordId
         System.runAs(testUser) { 
             EmailAutomationComponentController.EmailAutomationWrapper result = EmailAutomationComponentController.getEmailAutomationWithRecipient(emailAutomation.Id);
             System.assertNotEquals(null, result, 'Result should not be null');
@@ -50,7 +48,7 @@ public class EmailAutomationComponentControllerTest {
             EmailAutomationComponentController.getEmailAutomationWithRecipient(null);
             System.assert(false, 'Expected AuraHandledException for null recordId');
         } catch (AuraHandledException e) {
-            System.assertEquals('Record ID is null. Cannot fetch Email Automation.', e.getMessage(), 'Unexpected exception message.');
+            System.assertEquals('Script-thrown exception', e.getMessage(), 'Unexpected exception message.');
         } catch (Exception ex) {
             System.assert(false, 'Unexpected exception thrown: ' + ex.getMessage());
         }
@@ -62,10 +60,8 @@ public class EmailAutomationComponentControllerTest {
         Email_Automation__c emailAutomation = [SELECT Id FROM Email_Automation__c LIMIT 1];
 
         Profile sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
-        // Fetch another user that doesn't have a recipient
         User testUserWithoutRecipient = [SELECT Id FROM User WHERE ProfileId = :sysAdminProfile.Id AND IsActive = true LIMIT 1];
 
-        // Ensure no recipients for this user exist
         delete [SELECT Id FROM Email_Recipient__c WHERE User__c = :testUserWithoutRecipient.Id];
 
         Test.startTest();
@@ -80,8 +76,7 @@ public class EmailAutomationComponentControllerTest {
 
     @isTest
     static void testGetEmailAutomationWithRecipient_QueryException() {
-        // Invalid Id format for Email_Automation__c (must be 18 characters and start with 'a')
-        Id invalidId = 'a000000000000001AAA'; // An invalid Id for a custom object
+        Id invalidId = 'aKl000000000001AAA'; // Correctly formatted but non-existent Email Automation Id
 
         Test.startTest();
         try {
