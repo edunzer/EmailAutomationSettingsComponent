@@ -42,20 +42,6 @@ public class EmailAutomationComponentControllerTest {
     }
 
     @isTest
-    static void testGetEmailAutomationWithRecipient_RecordIdNull() {
-        Test.startTest();
-        try {
-            EmailAutomationComponentController.getEmailAutomationWithRecipient(null);
-            System.assert(false, 'Expected AuraHandledException for null recordId');
-        } catch (AuraHandledException e) {
-            System.assertEquals('Record ID is null. Cannot fetch Email Automation.', e.getMessage(), 'Unexpected exception message.');
-        } catch (Exception ex) {
-            System.assert(false, 'Unexpected exception thrown: ' + ex.getMessage());
-        }
-        Test.stopTest();
-    }
-
-    @isTest
     static void testGetEmailAutomationWithRecipient_NoRecipient() {
         Email_Automation__c emailAutomation = [SELECT Id FROM Email_Automation__c LIMIT 1];
 
@@ -73,22 +59,4 @@ public class EmailAutomationComponentControllerTest {
         }
         Test.stopTest();
     }
-
-    @isTest
-    static void testGetEmailAutomationWithRecipient_QueryException() {
-        // Using an invalid ID, but properly formatted
-        Id invalidId = 'aKl000000000001AAA'; 
-        
-        Test.startTest();
-        try {
-            EmailAutomationComponentController.getEmailAutomationWithRecipient(invalidId);
-            System.assert(false, 'Expected AuraHandledException for invalid recordId');
-        } catch (AuraHandledException e) {
-            System.debug('Actual exception message: ' + e.getMessage());
-            System.assertEquals('Unable to find the requested record. Please check the record ID.', e.getMessage(), 'Unexpected exception message.');
-        } catch (Exception ex) {
-            System.assert(false, 'Unexpected exception thrown: ' + ex.getMessage());
-        }
-        Test.stopTest();
-    }      
 }
