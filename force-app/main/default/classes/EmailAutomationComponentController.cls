@@ -15,26 +15,17 @@ public with sharing class EmailAutomationComponentController {
 
         try {
             // Query to get the Email Automation record based on recordId
-            Email_Automation__c emailAutomation;
-            try {
-                // Modify the query to handle the no rows found case explicitly
-                List<Email_Automation__c> emailAutomationList = [SELECT Id, Name, Description__c, Recipient_Count__c, Allow_Self_Registration__c, Allow_Self_Deregistration__c 
+            List<Email_Automation__c> emailAutomationList = [SELECT Id, Name, Description__c, Recipient_Count__c, Allow_Self_Registration__c, Allow_Self_Deregistration__c 
                                    FROM Email_Automation__c 
                                    WHERE Id = :recordId 
                                    LIMIT 1];
-
-                if (emailAutomationList.isEmpty()) {
-                    // Explicitly throw an AuraHandledException when no record is found
-                    throw new AuraHandledException('Unable to find the requested record. Please check the record ID.');
-                }
-                
-                emailAutomation = emailAutomationList[0];
-                System.debug('Email Automation record found: ' + emailAutomation.Id);
-                
-            } catch (QueryException qe) {
-                System.debug('QueryException: ' + qe.getMessage());
+            if (emailAutomationList.isEmpty()) {
+                // Explicitly handle case where no records are found
                 throw new AuraHandledException('Unable to find the requested record. Please check the record ID.');
             }
+
+            Email_Automation__c emailAutomation = emailAutomationList[0];
+            System.debug('Email Automation record found: ' + emailAutomation.Id);
 
             // Query to get the recipient associated with the current user for this email automation
             Email_Recipient__c userRecipient = null;
