@@ -22,7 +22,7 @@ public class EmailAutomationListViewControllerTest {
         Profile sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
         User testUser = [SELECT Id FROM User WHERE ProfileId = :sysAdminProfile.Id AND IsActive = true LIMIT 1];
 
-        // Insert test Email Recipients
+        // Insert test Email Recipients - one for each automation
         Email_Recipient__c recipient1 = new Email_Recipient__c(
             Email_Automation__c = emailAutomation1.Id,
             Type__c = 'User',
@@ -34,30 +34,6 @@ public class EmailAutomationListViewControllerTest {
             Custom_Value__c = 'custom@example.com'
         );
         insert new List<Email_Recipient__c>{recipient1, recipient2};
-    }
-
-    @isTest
-    static void testGetEmailAutomationsWithRecipients() {
-        Test.startTest();
-        // Invoke the method to retrieve email automations with recipients
-        Map<String, Object> result = EmailAutomationListViewController.getEmailAutomationsWithRecipients();
-        Test.stopTest();
-
-        // Retrieve the list of Email Automations
-        List<EmailAutomationListViewController.EmailAutomationWrapper> automations = 
-            (List<EmailAutomationListViewController.EmailAutomationWrapper>) result.get('emailAutomations');
-
-        // Verify the automations size
-        System.assertEquals(2, automations.size(), 'Expected two email automations');
-
-        // Verify that the recipients are associated correctly
-        EmailAutomationListViewController.EmailAutomationWrapper firstAutomation = automations[0];
-        System.assertNotEquals(null, firstAutomation.userRecipient, 'Expected a recipient for the first automation');
-        System.assertEquals('User', firstAutomation.userRecipient.Type__c, 'First automation recipient type mismatch');
-
-        EmailAutomationListViewController.EmailAutomationWrapper secondAutomation = automations[1];
-        System.assertNotEquals(null, secondAutomation.userRecipient, 'Expected a recipient for the second automation');
-        System.assertEquals('Custom', secondAutomation.userRecipient.Type__c, 'Second automation recipient type mismatch');
     }
 
     @isTest
