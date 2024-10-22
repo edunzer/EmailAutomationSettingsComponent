@@ -48,7 +48,7 @@ public class EmailAutomationComponentControllerTest {
             EmailAutomationComponentController.getEmailAutomationWithRecipient(null);
             System.assert(false, 'Expected AuraHandledException for null recordId');
         } catch (AuraHandledException e) {
-            System.assertEquals('Script-thrown exception', e.getMessage(), 'Unexpected exception message.');
+            System.assertEquals('Record ID is null. Cannot fetch Email Automation.', e.getMessage(), 'Unexpected exception message.');
         } catch (Exception ex) {
             System.assert(false, 'Unexpected exception thrown: ' + ex.getMessage());
         }
