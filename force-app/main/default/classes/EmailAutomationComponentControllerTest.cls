@@ -78,16 +78,17 @@ public class EmailAutomationComponentControllerTest {
     static void testGetEmailAutomationWithRecipient_QueryException() {
         // Using an invalid ID, but properly formatted
         Id invalidId = 'aKl000000000001AAA'; 
-    
+        
         Test.startTest();
         try {
             EmailAutomationComponentController.getEmailAutomationWithRecipient(invalidId);
             System.assert(false, 'Expected AuraHandledException for invalid recordId');
         } catch (AuraHandledException e) {
+            System.debug('Actual exception message: ' + e.getMessage());
             System.assertEquals('Unable to find the requested record. Please check the record ID.', e.getMessage(), 'Unexpected exception message.');
         } catch (Exception ex) {
             System.assert(false, 'Unexpected exception thrown: ' + ex.getMessage());
         }
         Test.stopTest();
-    }    
+    }      
 }
