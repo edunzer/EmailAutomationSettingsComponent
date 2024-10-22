@@ -65,7 +65,7 @@ public class EmailAutomationListViewControllerTest {
         // Create an email automation without any recipient
         Email_Automation__c emailAutomationNoRecipient = new Email_Automation__c(
             Name = 'Automation No Recipient',
-            Description__c = 'Automation with no recipients',
+            Description__c = 'Automation with no recipients'
         );
         insert emailAutomationNoRecipient;
 
