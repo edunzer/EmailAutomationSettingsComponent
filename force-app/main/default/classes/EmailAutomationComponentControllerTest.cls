@@ -76,8 +76,9 @@ public class EmailAutomationComponentControllerTest {
 
     @isTest
     static void testGetEmailAutomationWithRecipient_QueryException() {
-        Id invalidId = 'aKl000000000001AAA'; // Correctly formatted but non-existent Email Automation Id
-
+        // Using an invalid ID, but properly formatted
+        Id invalidId = 'aKl000000000001AAA'; 
+    
         Test.startTest();
         try {
             EmailAutomationComponentController.getEmailAutomationWithRecipient(invalidId);
@@ -88,5 +89,5 @@ public class EmailAutomationComponentControllerTest {
             System.assert(false, 'Unexpected exception thrown: ' + ex.getMessage());
         }
         Test.stopTest();
-    }
+    }    
 }
