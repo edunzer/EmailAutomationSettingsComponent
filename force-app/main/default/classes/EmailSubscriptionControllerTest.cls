@@ -54,4 +54,5 @@ public class EmailSubscriptionControllerTest {
         List<Email_Recipient__c> remainingRecipients = [SELECT Id FROM Email_Recipient__c WHERE Email_Automation__c = :emailAutomation.Id];
         System.assertEquals(0, remainingRecipients.size(), 'There should be 0 recipients after unsubscribing.');
     }
+
 }
