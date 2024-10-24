@@ -18,13 +18,15 @@ public with sharing class EmailSubscriptionController {
         Id currentUserId = UserInfo.getUserId();
 
         // Query the existing Email Recipient record
-        Email_Recipient__c recipientToDelete = [SELECT Id 
+        List<Email_Recipient__c> recipientsToDelete = [SELECT Id 
                                                 FROM Email_Recipient__c 
                                                 WHERE Email_Automation__c = :emailAutomationId 
                                                 AND User__c = :currentUserId 
                                                 LIMIT 1];
 
-        // Delete the Email Recipient record
-        delete recipientToDelete;
+        // Only delete if a record is found
+        if (!recipientsToDelete.isEmpty()) {
+            delete recipientsToDelete[0];
+        }
     }
 }
