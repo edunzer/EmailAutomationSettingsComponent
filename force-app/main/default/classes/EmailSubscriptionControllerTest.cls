@@ -12,15 +12,14 @@ public class EmailSubscriptionControllerTest {
         );
         insert emailAutomation;
 
-        // Insert test User (System Admin)
-        Profile sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
-        User testUser = [SELECT Id FROM User WHERE ProfileId = :sysAdminProfile.Id AND IsActive = true LIMIT 1];
+        // Get the current running user instead of querying for a system admin user
+        Id currentUserId = UserInfo.getUserId();
 
-        // Insert Email Recipient for unsubscription test
+        // Insert Email Recipient for unsubscription test using the current user
         Email_Recipient__c recipient = new Email_Recipient__c(
             Email_Automation__c = emailAutomation.Id,
             Type__c = 'User',
-            User__c = testUser.Id
+            User__c = currentUserId
         );
         insert recipient;
     }
@@ -54,5 +53,4 @@ public class EmailSubscriptionControllerTest {
         List<Email_Recipient__c> remainingRecipients = [SELECT Id FROM Email_Recipient__c WHERE Email_Automation__c = :emailAutomation.Id];
         System.assertEquals(0, remainingRecipients.size(), 'There should be 0 recipients after unsubscribing.');
     }
-
 }
