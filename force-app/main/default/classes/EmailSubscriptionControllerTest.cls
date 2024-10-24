@@ -42,11 +42,11 @@ public class EmailSubscriptionControllerTest {
 
     @isTest
     static void testUnsubscribeUser() {
-        // Get the Email Automation Id
-        Email_Automation__c emailAutomation = [SELECT Id FROM Email_Automation__c LIMIT 1];
+        // Get the Email Automation Id from the setup data
+        Email_Automation__c emailAutomation = [SELECT Id FROM Email_Automation__c WHERE Name = 'Test Automation' LIMIT 1];
 
         Test.startTest();
-        // Call the unsubscribeUser method
+        // Call the unsubscribeUser method using the email automation from setupData
         EmailSubscriptionController.unsubscribeUser(emailAutomation.Id);
         Test.stopTest();
 
