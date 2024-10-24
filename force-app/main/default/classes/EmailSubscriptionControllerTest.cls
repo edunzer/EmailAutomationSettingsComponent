@@ -39,4 +39,19 @@ public class EmailSubscriptionControllerTest {
         List<Email_Recipient__c> recipients = [SELECT Id, Email_Automation__c, User__c FROM Email_Recipient__c WHERE Email_Automation__c = :emailAutomation.Id];
         System.assertEquals(2, recipients.size(), 'There should be 2 recipients after subscribing.');
     }
+
+    @isTest
+    static void testUnsubscribeUser() {
+        // Get the Email Automation Id
+        Email_Automation__c emailAutomation = [SELECT Id FROM Email_Automation__c LIMIT 1];
+
+        Test.startTest();
+        // Call the unsubscribeUser method
+        EmailSubscriptionController.unsubscribeUser(emailAutomation.Id);
+        Test.stopTest();
+
+        // Verify that the unsubscription was successful
+        List<Email_Recipient__c> remainingRecipients = [SELECT Id FROM Email_Recipient__c WHERE Email_Automation__c = :emailAutomation.Id];
+        System.assertEquals(0, remainingRecipients.size(), 'There should be 0 recipients after unsubscribing.');
+    }
 }
